@@ -2,9 +2,9 @@ pipeline {
   agent any
 
   stages {
-    stage('Test') {
+    stage('Init') {
       steps {
-        sh 'echo "test"'
+        sh 'echo "init"'
       }
     }
     stage('Build') {
