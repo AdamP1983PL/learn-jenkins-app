@@ -27,5 +27,16 @@ pipeline {
         '''
       }
     }
+
+    stage('Test') {
+      steps {
+        sh '''
+          echo "Test stage"
+          test -f build/index.html
+          echo "Starting app tests"
+          npm test
+        '''
+      }
+    }
   }
 }
