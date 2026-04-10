@@ -92,7 +92,7 @@ pipeline {
           env.STAGE_URL = sh(script: 'node_modules/.bin/node-jq -r \'.deploy_url\' deploy-output.json', returnStdout: true)
         }
 
-        echo 'STAGE_URL is: "${STAGE_URL}"'
+        sh 'echo STAGE_URL is: "${STAGE_URL}"'
       }
     }
 
@@ -104,16 +104,13 @@ pipeline {
         }
       }
 
-      steps {
-        echo 'STAGE_URL is: "${STAGE_URL}"'
-      }
-
       environment {
         CI_ENVIRONMENT_URL = 'https://quiet-pegasus-7b0a58.netlify.app'
       }
 
       steps {
         sh '''
+          echo "STAGE_URL is: ${STAGE_URL}"
           echo "Starting Prod E2E tests"
           npx playwright test --reporter=html
         '''
