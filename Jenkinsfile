@@ -88,6 +88,31 @@ pipeline {
           node_modules/.bin/netlify deploy --dir=build  --json > deploy-output.json
           node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json
         '''
+        script {
+          env.STAGE_URL = sh(script: 'node_modules/.bin/node-jq -r \'.deploy_url\' deploy-output.json', returnStdout: true)
+        }
+
+        echo 'STAGE_URL is: "${STAGE_URL}"'
+      }
+    }
+
+    stage('Stage E2E') {
+      agent {
+        docker {
+          image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+          reuseNode true
+        }
+      }
+
+      environment {
+        CI_ENVIRONMENT_URL = 'https://quiet-pegasus-7b0a58.netlify.app'
+      }
+
+      steps {
+        sh '''
+          echo "Starting Prod E2E tests"
+          npx playwright test --reporter=html
+        '''
       }
     }
 
@@ -117,25 +142,6 @@ pipeline {
 //       }
 //     }
 //
-//     stage('Prod E2E') {
-//       agent {
-//         docker {
-//           image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
-//           reuseNode true
-//         }
-//       }
-//
-//       environment {
-//         CI_ENVIRONMENT_URL = 'https://quiet-pegasus-7b0a58.netlify.app'
-//       }
-//
-//       steps {
-//         sh '''
-//           echo "Starting Prod E2E tests"
-//           npx playwright test --reporter=html
-//         '''
-//       }
-//     }
 
   }
 
