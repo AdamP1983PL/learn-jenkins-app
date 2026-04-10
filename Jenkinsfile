@@ -84,56 +84,56 @@ pipeline {
           node_modules/.bin/netlify --version
           echo "Deploying to production. Site ID: $NETLIFY_SITE_ID"
           node_modules/.bin/netlify status
-          node_modules/.bin/netlify deploy --dir=build  --json
+          node_modules/.bin/netlify deploy --dir=build  --json > deploy-output.json
         '''
       }
     }
 
-    stage('Approval') {
-      steps {
-        timeout(time:2, unit: 'MINUTES') {
-          input message: 'Ready to deploy?'
-        }
-      }
-    }
+//     stage('Approval') {
+//       steps {
+//         timeout(time:2, unit: 'MINUTES') {
+//           input message: 'Ready to deploy?'
+//         }
+//       }
+//     }
 
-    stage('Deploy prod') {
-      agent {
-        docker {
-          image 'node:18-alpine'
-          reuseNode true
-        }
-      }
-      steps {
-        sh '''
-          npm install netlify-cli@20.1.1
-          node_modules/.bin/netlify --version
-          echo "Deploying to production. Site ID: $NETLIFY_SITE_ID"
-          node_modules/.bin/netlify status
-          node_modules/.bin/netlify deploy --dir=build --prod
-        '''
-      }
-    }
-
-    stage('Prod E2E') {
-      agent {
-        docker {
-          image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
-          reuseNode true
-        }
-      }
-
-      environment {
-        CI_ENVIRONMENT_URL = 'https://quiet-pegasus-7b0a58.netlify.app'
-      }
-
-      steps {
-        sh '''
-          echo "Starting Prod E2E tests"
-          npx playwright test --reporter=html
-        '''
-      }
-    }
+//     stage('Deploy prod') {
+//       agent {
+//         docker {
+//           image 'node:18-alpine'
+//           reuseNode true
+//         }
+//       }
+//       steps {
+//         sh '''
+//           npm install netlify-cli@20.1.1
+//           node_modules/.bin/netlify --version
+//           echo "Deploying to production. Site ID: $NETLIFY_SITE_ID"
+//           node_modules/.bin/netlify status
+//           node_modules/.bin/netlify deploy --dir=build --prod
+//         '''
+//       }
+//     }
+//
+//     stage('Prod E2E') {
+//       agent {
+//         docker {
+//           image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+//           reuseNode true
+//         }
+//       }
+//
+//       environment {
+//         CI_ENVIRONMENT_URL = 'https://quiet-pegasus-7b0a58.netlify.app'
+//       }
+//
+//       steps {
+//         sh '''
+//           echo "Starting Prod E2E tests"
+//           npx playwright test --reporter=html
+//         '''
+//       }
+//     }
 
   }
 
