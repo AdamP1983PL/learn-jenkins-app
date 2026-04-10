@@ -27,6 +27,7 @@ pipeline {
           npm ci
           npm run build
           echo "Build end"
+          echo "Build end"
         '''
       }
     }
