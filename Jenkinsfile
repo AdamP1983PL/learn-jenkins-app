@@ -104,6 +104,10 @@ pipeline {
         }
       }
 
+      steps {
+        echo 'STAGE_URL is: "${STAGE_URL}"'
+      }
+
       environment {
         CI_ENVIRONMENT_URL = 'https://quiet-pegasus-7b0a58.netlify.app'
       }
